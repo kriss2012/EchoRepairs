@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoRepears - Repair Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0f172a;
+            --input-bg: #050910;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --primary-btn: #ffffff;
+            --primary-btn-text: #000000;
+            --border-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 80px;
+        }
+
+        /* --- Components --- */
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-btn);
+            color: var(--primary-btn-text);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--text-main);
+            color: var(--text-main);
+        }
+
+        .btn:hover { opacity: 0.9; }
+
+        .input-group { margin-bottom: 15px; }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .logo {
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .nav-btn {
+            background-color: var(--primary-btn);
+            color: var(--primary-btn-text);
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* --- Sections (Views) --- */
+        .view-section {
+            display: none;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Home View --- */
+        .hero {
+            text-align: left;
+            margin: 20px 0 40px 0;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .stats {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+        
+        .stats span {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Service Cards */
+        .service-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .service-img-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #1e293b;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            overflow: hidden;
+        }
+        
+        .service-img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .service-card h3 { margin-bottom: 5px; }
+
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Referral Banner */
+        .referral-banner {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 0;
+            margin: 40px -20px;
+        }
+
+        .referral-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .referral-banner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .referral-banner p {
+            color: #4b5563;
+            margin-bottom: 25px;
+        }
+
+        .referral-btn {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* --- Forms --- */
+        .form-container {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-header { margin-bottom: 20px; }
+
+        .location-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .checkbox-item input {
+            accent-color: white;
+            width: 18px;
+            height: 18px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff;
+            color: #000;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 40px;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="showSection('home')">EchoRepears</div>
+        <div class="nav-right">
+            <span class="nav-link" onclick="showSection('admin')">Admin</span>
+            <button class="nav-btn" onclick="showSection('book')">Book</button>
+        </div>
+    </nav>
+
+    <div id="home" class="view-section active">
+        <div class="hero">
+            <h1>Expert Repair Services at Your Doorstep</h1>
+            <p>Pune's most trusted repair service for phones, laptops, PCs, and home appliances. Fast, reliable, and affordable.</p>
+            
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="showSection('book')">Book a Service</button>
+                <button class="btn btn-outline" onclick="showSection('register')">Become a Repairman</button>
+                <button class="btn btn-outline" onclick="showSection('join')">Join Our Team</button>
+            </div>
+
+            <div class="stats">
+                50+
+                <span>Expert Technicians</span>
+            </div>
+        </div>
+
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-subtitle">Professional repair services for all your devices and appliances</p>
+
+        <div class="service-card">
+            <div class="service-img-placeholder">
+    <img src="repair.jpg" alt="Phone Repair" loading="lazy">
+</div>
+
+            <i class="fas fa-phone service-icon"></i>
+            <h3>Phone Repair</h3>
+            <p>Screen replacement, battery issues, water damage & more</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-img-placeholder">
+    <img src="repair1.jpg" alt="Phone Repair" loading="lazy">
+</div>
+
+            <i class="fas fa-wrench service-icon"></i>
+            <h3>Electronics Repair</h3>
+            <p>TVs, gaming consoles, tablets & other electronics</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-img-placeholder">
+    <img src="repair2.jpg" alt="Phone Repair" loading="lazy">
+</div>
+            <h3>Home Appliances</h3>
+            <p>AC, refrigerator, washing machine & other appliances</p>
+        </div>
+
+        <div class="referral-banner">
+            <i class="fas fa-gift referral-icon"></i>
+            <h2>Refer a Friend, Earn ₹100</h2>
+            <p>Share your referral code with friends and family. When they book their first service, you both win!</p>
+            <button class="referral-btn">Get Your Referral Code</button>
+        </div>
+    </div>
+
+    <div id="book" class="view-section">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2>Book a Repair Service</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Fill in your details and we'll send a repairman to you</p>
+        </div>
+
+        <div class="form-container">
+            <form onsubmit="handleBookingSubmit(event)">
+                <div class="form-header">
+                    <h3>Customer Details</h3>
+                </div>
+
+                <div class="input-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="customerName" placeholder="Your full name" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" name="phone" placeholder="10-digit mobile number" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Full Address *</label>
+                    <textarea name="address" placeholder="Enter your complete address" rows="3" required></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Your Location *</label>
+                    <div class="location-row">
+                        <input type="text" id="lat" name="location_lat" placeholder="Latitude" readonly>
+                        <input type="text" id="long" name="location_long" placeholder="Longitude" readonly>
+                    </div>
+                    <button type="button" class="btn btn-outline" style="font-size: 0.9rem; padding: 10px;" onclick="getLocation()">
+                        <i class="fas fa-map-marker-alt"></i> Get Current Location
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <label>Service Type *</label>
+                    <select name="serviceType" required>
+                        <option value="">Select service</option>
+                        <option value="phone">Phone Repair</option>
+                        <option value="laptop">Laptop Repair</option>
+                        <option value="appliance">Home Appliance</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Device Details *</label>
+                    <input type="text" name="device" placeholder="e.g., iPhone 13, HP Laptop, Samsung AC" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Issue Description *</label>
+                    <textarea name="issue" placeholder="Describe the problem..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Pay ₹500 & Book Now</button>
+                <button type="button" class="btn btn-outline" style="margin-top: 10px; border:none;" onclick="showSection('home')">← Back to Home</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="register" class="view-section">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2>Register as Repairman</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Join our team and start earning</p>
+        </div>
+
+        <div class="form-container">
+            <form onsubmit="handleRepairmanRegister(event)">
+                <div class="form-header">
+                    <h3>Repairman Details</h3>
+                </div>
+
+                <div class="input-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" placeholder="Your full name" required>
+                </div>
+
+                <div class="input-group">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label>Phone *</label>
+                            <input type="tel" name="phone" placeholder="10-digit number" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Email *</label>
+                            <input type="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Aadhaar Card Number *</label>
+                    <input type="text" name="aadhar" placeholder="12-digit Aadhaar number" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Experience *</label>
+                    <input type="text" name="experience" placeholder="e.g., 5 years in phone repair" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Skills * (Select all that apply)</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item"><input type="checkbox" name="skills" value="Phone Repair"> Phone Repair</label>
+                        <label class="checkbox-item"><input type="checkbox" name="skills" value="Laptop Repair"> Laptop Repair</label>
+                        <label class="checkbox-item"><input type="checkbox" name="skills" value="PC Repair"> PC Repair</label>
+                        <label class="checkbox-item"><input type="checkbox" name="skills" value="Home Appliances"> Home Appliances</label>
+                        <label class="checkbox-item"><input type="checkbox" name="skills" value="Screen Replace"> Screen Replace</label>
+                        <label class="checkbox-item"><input type="checkbox" name="skills" value="Hardware"> Hardware</label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Address *</label>
+                    <textarea name="address" placeholder="Your complete address" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+        <button type="button" class="btn btn-outline" style="margin-top: 10px; border:none;" onclick="showSection('home')">← Back to Home</button>
+    </div>
+
+    <div id="join" class="view-section">
+        <div style="text-align:center; margin-bottom:20px;">
+            <h2>Join Our Team</h2>
+            <p style="color: var(--text-muted); font-size:0.9rem;">Apply for non-technical roles at Fixipy</p>
+        </div>
+
+        <div class="form-container">
+            <form onsubmit="handleJoinTeam(event)">
+                <div class="input-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" required placeholder="Your full name">
+                </div>
+
+                <div class="input-group">
+                    <label>Email *</label>
+                    <input type="email" name="email" required placeholder="your@email.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Phone *</label>
+                    <input type="tel" name="phone" required placeholder="10-digit mobile number">
+                </div>
+
+                <div class="input-group">
+                    <label>Role Interested In *</label>
+                    <select name="role" required>
+                        <option value="">Select role</option>
+                        <option>Customer Support</option>
+                        <option>Operations</option>
+                        <option>Marketing</option>
+                        <option>Sales</option>
+                        <option>Intern</option>
+                    </select>
+                </div>
+                   <div class="input-group">
+    <label>Upload Resume *</label>
+    <input 
+        type="file" 
+        id="resume"
+        required
+        accept=".pdf,.doc,.docx,.txt"
+    >
+    <small style="color: var(--text-muted); font-size: 0.75rem;">
+        Accepted formats: PDF, DOC, DOCX, TXT (Max 2MB)
+    </small>
+</div>
+                <div class="input-group">
+                    <label>Why should we hire you? *</label>
+                    <textarea name="reason" required placeholder="Tell us about yourself"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Apply Now</button>
+                <button type="button" class="btn btn-outline" style="margin-top:10px; border:none;" onclick="showSection('home')">← Back to Home</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin" class="view-section">
+        <div style="margin-top: 50px; text-align: center; margin-bottom: 30px;">
+            <h2>Admin Login</h2>
+        </div>
+
+        <div class="form-container">
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-lock"></i> <h3>Admin Access</h3>
+            </div>
+            
+            <form onsubmit="event.preventDefault(); showToast('Admin Panel not connected in demo');">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" placeholder="Enter admin username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter password">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="#" onclick="showSection('home')" style="color: white; text-decoration: none; font-size: 0.9rem;">← Back to Home</a>
+                </div>
+            </form>
+        </div>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Admin Access Only</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 EchoRepears. Jalgoan's trusted repair service.</p>
+    </footer>
+    
+    <div id="toast" class="toast hidden"></div>
+
+    <script>
+        // --- UI UTILITIES ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        function getLocation() {
+            const lat = document.getElementById('lat');
+            const long = document.getElementById('long');
+            lat.value = "Locating...";
+            
+            if (!navigator.geolocation) {
+                showToast("Geolocation not supported");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    lat.value = pos.coords.latitude.toFixed(6);
+                    long.value = pos.coords.longitude.toFixed(6);
+                    showToast("Location captured");
+                },
+                () => showToast("Location permission denied")
+            );
+        }
+
+        // --- 1. HANDLE BOOKING (RAZORPAY INTEGRATION) ---
+        async function handleBookingSubmit(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Processing...";
+
+            try {
+                // 1. Call Backend to create Order
+                const res = await fetch('/create-order', { method: 'POST' });
+                const order = await res.json();
+
+                if (order.error) {
+                    showToast("Error: " + order.error);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    return;
+                }
+
+                // 2. Open Razorpay
+                const options = {
+                    "key": "rzp_live_Ryw96sIwgA6UD4", // Replace if needed, or backend can provide
+                    "amount": order.amount,
+                    "currency": "INR",
+                    "name": "EchoRepairs Services",
+                    "description": "Repair Service Booking",
+                    "order_id": order.id,
+                    "handler": async function (response) {
+                        // 3. Verify Payment on Backend
+                        try {
+                            const verifyRes = await fetch('/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    booking_details: {
+                                        customerName: formData.get('customerName'),
+                                        phone: formData.get('phone'),
+                                        address: formData.get('address'),
+                                        location_lat: formData.get('location_lat'),
+                                        location_long: formData.get('location_long'),
+                                        serviceType: formData.get('serviceType'),
+                                        device: formData.get('device'),
+                                        issue: formData.get('issue')
+                                    }
+                                })
+                            });
+
+                            const result = await verifyRes.json();
+                            if (result.status === 'success') {
+                                showToast("Booking Successful! Technician notified.");
+                                event.target.reset();
+                                showSection('home');
+                            } else {
+                                showToast("Payment Verification Failed");
+                            }
+                        } catch(e) {
+                            showToast("Server Error during verification");
+                        }
+                    },
+                    "theme": { "color": "#0f172a" }
+                };
+                
+                const rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response){
+                    showToast("Payment Failed: " + response.error.description);
+                });
+                rzp1.open();
+
+            } catch (err) {
+                showToast("Connection Error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+
+        // --- 2. HANDLE REPAIRMAN REGISTRATION ---
+        async function handleRepairmanRegister(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Handle multiple checkboxes for skills
+            const skills = formData.getAll('skills');
+            data.skills = skills;
+
+            try {
+                const response = await fetch('/register-repairman', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast("Registration Submitted!");
+                    event.target.reset();
+                    showSection('home');
+                } else {
+                    showToast("Error: " + result.message);
+                }
+            } catch (err) {
+                showToast("Server Connection Failed");
+            }
+        }
+
+        // --- 3. HANDLE TEAM JOINING (FILE UPLOAD) ---
+        async function handleJoinTeam(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const fileInput = document.getElementById('resume');
+
+            // Client-side validation
+            if(fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if(file.size > 2 * 1024 * 1024) return showToast("File too large (Max 2MB)");
+            }
+
+            try {
+                const response = await fetch('/join-team', {
+                    method: 'POST',
+                    body: formData // Fetch handles multipart headers automatically
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showToast("Application Submitted Successfully!");
+                    event.target.reset();
+                    showSection('home');
+                } else {
+                    showToast("Error: " + result.message);
+                }
+            } catch (err) {
+                showToast("Server Connection Failed");
+            }
+        }
+
+        // Referral code generator
+        document.querySelector('.referral-btn')?.addEventListener('click', () => {
+            const code = "FIXI" + Math.floor(1000 + Math.random() * 9000);
+            showToast(`Your referral code: ${code}`);
+        });
+    </script>
+</body>
+</html>
