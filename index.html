@@ -293,18 +293,24 @@
         }
 
         .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+    display: flex;
+    align-items: center;
+    gap: 12px;                  /* More space between box and text */
+    color: var(--text-muted);
+    font-size: 1rem;            /* Slightly larger text for mobile */
+    padding: 10px 5px;          /* Adds clickable padding around the text */
+    cursor: pointer;
+    min-height: 44px;           /* Minimum touch target size for Android */
+    width: 100%;                /* Ensures the label fills the grid cell */
+}
 
         .checkbox-item input {
-            accent-color: white;
-            width: 18px;
-            height: 18px;
-        }
+    accent-color: #3b82f6;      /* CHANGED from 'white' to Blue for better visibility */
+    width: 20px;                /* Slightly larger box */
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;             /* Prevents box from squishing on small screens */
+}
 
         .toast {
             position: fixed;
